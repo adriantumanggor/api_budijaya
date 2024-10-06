@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: rails_api
+    user: "1000:1000"  
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://admin:admin@postgres_db:5432/docker_db_test
+      RAILS_ENV: ${RAILS_ENV:-development}
+    networks:
+      - rails_network  
+      - postgres_network
+
+networks:
+  rails_network:
+    name: rails_development  
+  postgres_network:
+    external: true
+    name: postgres_default
