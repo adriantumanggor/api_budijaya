@@ -23,7 +23,7 @@ default: &default
   password: <%= ENV['POSTGRES_PASSWORD'] || 'admin' %>
   host: <%= ENV['POSTGRES_HOST'] || 'postgres_db' %>
   port: <%= ENV['POSTGRES_PORT'] || '5432' %>
-  database: <%= ENV['POSTGRES_DB'] || 'pt_budi' %>
+  database: <%= ENV['POSTGRES_DB'] || 'perusahaan' %>
 
 
 
