@@ -1,0 +1,25 @@
+# docker_ruby_postgres/ruby/Dockerfile
+FROM ruby:3.3.5
+
+# Install dependencies
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs yarn
+
+# Create a directory for the app
+WORKDIR /app
+
+# Copy the Gemfile and Gemfile.lock into the image
+COPY Gemfile Gemfile.lock ./
+
+# Install gems
+RUN bundle install
+
+# Copy the rest of the application code
+COPY . .
+
+# Add this near the end of your Dockerfile
+COPY docker-entrypoint.sh /usr/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["rails", "server", "-b", "0.0.0.0"]
+
