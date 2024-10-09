@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  karyawan: one
+  bulan: MyString
+  gaji_pokok: 9.99
+  tunjangan: 9.99
+  potongan: 9.99
+  total_gaji: 9.99
+
+two:
+  karyawan: two
+  bulan: MyString
+  gaji_pokok: 9.99
+  tunjangan: 9.99
+  potongan: 9.99
+  total_gaji: 9.99
