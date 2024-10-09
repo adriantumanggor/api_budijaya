@@ -1,4 +1,4 @@
-class Departeman < ApplicationRecord
+class Departemen < ApplicationRecord
   self.table_name = "departemen"
 
   has_many :karyawan, class_name: "Karyawan"
