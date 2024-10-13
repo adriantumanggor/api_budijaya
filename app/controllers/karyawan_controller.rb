@@ -1,9 +1,15 @@
+# app/controllers/karyawan_controller.rb
 class KaryawanController < ApplicationController
   before_action :set_karyawan, only: %i[ show update destroy ]
 
   # GET /karyawan
   def index
     @karyawan = Karyawan.all
+    @karyawan = @karyawan.by_nama_lengkap(params[:nama]) if params[:nama].present?
+    @karyawan = @karyawan.by_email(params[:email]) if params[:email].present?
+    @karyawan = @karyawan.by_departemen(params[:departemen_id]) if params[:departemen_id].present?
+    @karyawan = @karyawan.by_jabatan(params[:jabatan_id]) if params[:jabatan_id].present?
+    @karyawan = @karyawan.by_status(params[:status]) if params[:status].present?
 
     render json: @karyawan
   end
@@ -46,6 +52,16 @@ class KaryawanController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def karyawan_params
-      params.fetch(:karyawan, {})
+      params.require(:karyawan).permit(
+        :nama_lengkap, 
+        :email, 
+        :nomor_telepon, 
+        :tanggal_lahir,
+        :alamat, 
+        :tanggal_masuk, 
+        :departemen_id, 
+        :jabatan_id, 
+        :status
+      )
     end
 end
