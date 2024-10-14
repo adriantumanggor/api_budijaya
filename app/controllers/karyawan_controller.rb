@@ -12,6 +12,11 @@ class KaryawanController < ApplicationController
     @karyawan = @karyawan.by_departemen(params[:departemen_id]) if params[:departemen_id].present?
     @karyawan = @karyawan.by_jabatan(params[:jabatan_id]) if params[:jabatan_id].present?
     @karyawan = @karyawan.by_status(params[:status]) if params[:status].present?
+    # @karyawan = @karyawan.by_nomor_telepon(params[:nomor_telepon]) if params[:nomor_telepon].present?
+    # @karyawan = @karyawan.by_tanggal_lahir(params[:tanggal_lahir]) if params[:tanggal_lahir].present?
+    # @karyawan = @karyawan.by_alamat(params[:alamat]) if params[:alamat].present?
+    # @karyawan = @karyawan.by_tanggal_masuk(params[:tanggal_masuk]) if params[:tanggal_masuk].present?
+
 
     render json: @karyawan
   end
@@ -53,14 +58,14 @@ class KaryawanController < ApplicationController
 
     def karyawan_params
       params.require(:karyawan).permit(
-        :nama_lengkap, 
-        :email, 
-        :nomor_telepon, 
+        :nama_lengkap,
+        :email,
+        :nomor_telepon,
         :tanggal_lahir,
-        :alamat, 
-        :tanggal_masuk, 
-        :departemen_id, 
-        :jabatan_id, 
+        :alamat,
+        :tanggal_masuk,
+        :departemen_id,
+        :jabatan_id,
         :status
       )
     end

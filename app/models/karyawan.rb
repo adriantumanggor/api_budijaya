@@ -45,5 +45,5 @@ class Karyawan < ApplicationRecord
 
   def self.by_status(status)
     where(status: status)
-  end 
+  end
 end
