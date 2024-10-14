@@ -1,6 +1,8 @@
 # app/controllers/karyawan_controller.rb
 class KaryawanController < ApplicationController
   before_action :set_karyawan, only: %i[ show update destroy ]
+  before_action :check_query_params, only: [:index]
+  before_action :check_body_params, only: %i[ create update ]
 
   # GET /karyawan
   def index
@@ -45,12 +47,10 @@ class KaryawanController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_karyawan
       @karyawan = Karyawan.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def karyawan_params
       params.require(:karyawan).permit(
         :nama_lengkap, 
@@ -63,5 +63,27 @@ class KaryawanController < ApplicationController
         :jabatan_id, 
         :status
       )
+    end
+
+    def allowed_query_params
+      %w[nama email departemen_id jabatan_id status]
+    end
+
+    def check_query_params
+      invalid_params = params.keys - allowed_query_params - ['controller', 'action']
+      if invalid_params.any?
+        render json: { error: "Invalid parameter(s): #{invalid_params.join(', ')}" }, status: :bad_request
+      end
+    end
+
+    def check_body_params
+      allowed_params = karyawan_params.keys
+      incoming_params = params[:karyawan]&.keys || []
+
+      extra_params = incoming_params - allowed_params
+
+      if extra_params.any?
+        render json: { error: "Unpermitted parameter(s): #{extra_params.join(', ')}" }, status: :bad_request
+      end
     end
 end
