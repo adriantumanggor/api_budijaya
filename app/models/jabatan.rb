@@ -5,7 +5,5 @@ class Jabatan < ApplicationRecord
 
   validates :nama_jabatan, presence: true, length: { maximum: 100 }
 
-  def self.by_nama(nama)
-    where("nama_jabatan ILIKE ?", "%#{nama}%")
-  end
+  scope :by_nama, ->(nama) { where("nama_jabatan ILIKE ?", "%#{nama}%") }
 end

@@ -1,51 +1,48 @@
 class DepartemenController < ApplicationController
-  before_action :set_departeman, only: %i[ show update destroy ]
+  include QueryParamCheckDepartemen
 
-  # GET /departemen
+  before_action :set_departemen, only: %i[show update destroy]
+
   def index
-    @departemen = Departeman.all
-
+    @departemen = filter_departemen(Departemen.all)
     render json: @departemen
   end
 
-  # GET /departemen/1
   def show
-    render json: @departeman
+    render json: @departemen
   end
 
-  # POST /departemen
   def create
-    @departeman = Departeman.new(departeman_params)
+    @departemen = Departemen.new(departemen_params)
 
-    if @departeman.save
-      render json: @departeman, status: :created, location: @departeman
+    if @departemen.save
+      render json: @departemen, status: :created, location: @departemen
     else
-      render json: @departeman.errors, status: :unprocessable_entity
+      render json: @departemen.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /departemen/1
   def update
-    if @departeman.update(departeman_params)
-      render json: @departeman
+    if @departemen.update(departemen_params)
+      render json: @departemen
     else
-      render json: @departeman.errors, status: :unprocessable_entity
+      render json: @departemen.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /departemen/1
   def destroy
-    @departeman.destroy!
+    @departemen.destroy!
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_departeman
-      @departeman = Departeman.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def departeman_params
-      params.require(:departeman).permit(:nama_departemen)
-    end
+  def set_departemen
+    @departemen = Departemen.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Departemen record not found" }, status: :not_found
+  end
+
+  def departemen_params
+    params.require(:departemen).permit(:nama_departemen)
+  end
 end

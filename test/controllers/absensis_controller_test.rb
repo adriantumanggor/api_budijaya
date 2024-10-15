@@ -1,6 +1,6 @@
 require "test_helper"
 
-class AbsensisControllerTest < ActionDispatch::IntegrationTest
+class AbsensiControllerTest < ActionDispatch::IntegrationTest
   setup do
     @absensi = absensis(:one)
   end

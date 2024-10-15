@@ -1,19 +1,17 @@
 class GajiController < ApplicationController
-  before_action :set_gaji, only: %i[ show update destroy ]
+  include QueryParamCheckGaji
 
-  # GET /gaji
+  before_action :set_gaji, only: %i[show update destroy]
+
   def index
-    @gaji = Gaji.all
-
+    @gaji = filter_gaji(Gaji.all)
     render json: @gaji
   end
 
-  # GET /gaji/1
   def show
     render json: @gaji
   end
 
-  # POST /gaji
   def create
     @gaji = Gaji.new(gaji_params)
 
@@ -24,7 +22,6 @@ class GajiController < ApplicationController
     end
   end
 
-  # PATCH/PUT /gaji/1
   def update
     if @gaji.update(gaji_params)
       render json: @gaji
@@ -33,19 +30,20 @@ class GajiController < ApplicationController
     end
   end
 
-  # DELETE /gaji/1
   def destroy
-    @gaji.destroy!
+    @gaji.destroy
+    head :no_content
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_gaji
-      @gaji = Gaji.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def gaji_params
-      params.require(:gaji).permit(:karyawan_id, :bulan, :gaji_pokok, :tunjangan, :potongan, :total_gaji)
-    end
+  def set_gaji
+    @gaji = Gaji.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Gaji record not found' }, status: :not_found
+  end
+
+  def gaji_params
+    params.require(:gaji).permit(:karyawan_id, :bulan, :gaji_pokok, :tunjangan, :potongan, :total_gaji)
+  end
 end

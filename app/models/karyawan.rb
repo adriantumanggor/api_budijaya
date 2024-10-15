@@ -11,39 +11,13 @@ class Karyawan < ApplicationRecord
   validates :nomor_telepon, length: { maximum: 15 }, allow_blank: true
   validates :status, inclusion: { in: %w[aktif nonaktif] }
 
-  def self.by_nama_lengkap(nama)
-    where("nama_lengkap ILIKE ?", "%#{nama}%")
-  end
-
-  def self.by_email(email)
-    where("email ILIKE ?", "%#{email}%")
-  end
-
-  def self.by_nomor_telepon(nomor)
-    where("nomor_telepon LIKE ?", "%#{nomor}%")
-  end
-
-  def self.by_tanggal_lahir(tanggal)
-    where(tanggal_lahir: tanggal)
-  end
-
-  def self.by_alamat(alamat)
-    where("alamat ILIKE ?", "%#{alamat}%")
-  end
-
-  def self.by_tanggal_masuk(tanggal)
-    where(tanggal_masuk: tanggal)
-  end
-
-  def self.by_departemen(departemen_id)
-    where(departemen_id: departemen_id)
-  end
-
-  def self.by_jabatan(jabatan_id)
-    where(jabatan_id: jabatan_id)
-  end
-
-  def self.by_status(status)
-    where(status: status)
-  end
+  scope :by_nama, ->(nama) { where("nama_lengkap ILIKE ?", "%#{nama}%") }
+  scope :by_email, ->(email) { where("email ILIKE ?", "%#{email}%") }
+  scope :by_nomor_telepon, ->(nomor) { where("nomor_telepon LIKE ?", "%#{nomor}%") }
+  scope :by_tanggal_lahir, ->(tanggal) { where(tanggal_lahir: tanggal) }
+  scope :by_alamat, ->(alamat) { where("alamat ILIKE ?", "%#{alamat}%") }
+  scope :by_tanggal_masuk, ->(tanggal) { where(tanggal_masuk: tanggal) }
+  scope :by_departemen_id, ->(departemen_id) { where(departemen_id: departemen_id) }
+  scope :by_jabatan_id, ->(jabatan_id) { where(jabatan_id: jabatan_id) }
+  scope :by_status, ->(status) { where(status: status) }
 end

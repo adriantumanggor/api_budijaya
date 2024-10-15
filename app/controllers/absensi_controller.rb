@@ -1,19 +1,17 @@
 class AbsensiController < ApplicationController
-  before_action :set_absensi, only: %i[ show update destroy ]
+  include QueryParamCheckAbsensi
 
-  # GET /absensi
+  before_action :set_absensi, only: %i[show update destroy]
+
   def index
-    @absensi = Absensi.all
-
+    @absensi = filter_absensi(Absensi.all)
     render json: @absensi
   end
 
-  # GET /absensi/1
   def show
     render json: @absensi
   end
 
-  # POST /absensi
   def create
     @absensi = Absensi.new(absensi_params)
 
@@ -24,7 +22,6 @@ class AbsensiController < ApplicationController
     end
   end
 
-  # PATCH/PUT /absensi/1
   def update
     if @absensi.update(absensi_params)
       render json: @absensi
@@ -33,19 +30,19 @@ class AbsensiController < ApplicationController
     end
   end
 
-  # DELETE /absensi/1
   def destroy
     @absensi.destroy!
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_absensi
-      @absensi = Absensi.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def absensi_params
-      params.fetch(:absensi, {})
-    end
+  def set_absensi
+    @absensi = Absensi.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Absensi record not found" }, status: :not_found
+  end
+
+  def absensi_params
+    params.require(:absensi).permit(:karyawan_id, :tanggal, :waktu_masuk, :waktu_keluar, :status_absensi)
+  end
 end
