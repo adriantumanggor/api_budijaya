@@ -40,7 +40,7 @@ class GajiController < ApplicationController
   def set_gaji
     @gaji = Gaji.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Gaji record not found' }, status: :not_found
+    render json: { error: "Gaji record not found" }, status: :not_found
   end
 
   def gaji_params

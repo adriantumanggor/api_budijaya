@@ -14,7 +14,6 @@ class DepartemenController < ApplicationController
 
   def create
     @departemen = Departemen.new(departemen_params)
-
     if @departemen.save
       render json: @departemen, status: :created, location: @departemen
     else
@@ -31,7 +30,8 @@ class DepartemenController < ApplicationController
   end
 
   def destroy
-    @departemen.destroy!
+    @departemen.destroy
+    head :no_content
   end
 
   private
@@ -43,6 +43,6 @@ class DepartemenController < ApplicationController
   end
 
   def departemen_params
-    params.require(:departemen).permit(:nama_departemen)
+    params.permit(:nama_departemen)
   end
 end
