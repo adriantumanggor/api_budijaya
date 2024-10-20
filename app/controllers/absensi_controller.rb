@@ -23,7 +23,7 @@ class AbsensiController < ApplicationController
   end
 
   def update
-    if @absensi.update(absensi_params)
+    if @absensi.update(absensi_update_params)
       render json: @absensi
     else
       render json: @absensi.errors, status: :unprocessable_entity
@@ -42,7 +42,11 @@ class AbsensiController < ApplicationController
     render json: { error: "Absensi record not found" }, status: :not_found
   end
 
-  def absensi_params
+  def absensi_update_params
     params.require(:absensi).permit(:karyawan_id, :tanggal, :waktu_masuk, :waktu_keluar, :status_absensi)
+  end
+
+  def absensi_params
+    params.require(:absensi).permit(:karyawan_id, :status_absensi)
   end
 end
