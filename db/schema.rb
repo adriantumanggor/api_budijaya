@@ -10,8 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 0) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_20_112722) do
+  create_schema "cron"
+
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_cron"
   enable_extension "plpgsql"
 
   create_table "absensi", id: :serial, force: :cascade do |t|
@@ -33,7 +36,7 @@ ActiveRecord::Schema[7.2].define(version: 0) do
     t.decimal "gaji_pokok", precision: 10, scale: 2, null: false
     t.decimal "tunjangan", precision: 10, scale: 2
     t.decimal "potongan", precision: 10, scale: 2
-    t.decimal "total_gaji", precision: 10, scale: 2
+    t.virtual "total_gaji", type: :decimal, precision: 10, scale: 2, as: "((gaji_pokok + COALESCE(tunjangan, (0)::numeric)) - COALESCE(potongan, (0)::numeric))", stored: true
   end
 
   create_table "jabatan", id: :serial, force: :cascade do |t|
@@ -50,7 +53,9 @@ ActiveRecord::Schema[7.2].define(version: 0) do
     t.integer "departemen_id"
     t.integer "jabatan_id"
     t.string "status", limit: 8, null: false
-
+    t.boolean "deleted", default: false
+    t.index ["id"], name: "idx_karyawan_id_1_first", where: "(id = 1)"
+    t.index ["id"], name: "idx_karyawan_id_order"
     t.check_constraint "status::text = ANY (ARRAY['aktif'::character varying, 'nonaktif'::character varying]::text[])", name: "karyawan_status_check"
     t.unique_constraint ["email"], name: "karyawan_email_key"
   end

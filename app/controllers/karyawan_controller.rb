@@ -31,7 +31,7 @@ class KaryawanController < ApplicationController
   end
 
   def destroy
-    @karyawan.destroy
+    @karyawan.soft_delete
   end
 
   private

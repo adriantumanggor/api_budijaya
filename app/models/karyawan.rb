@@ -10,7 +10,7 @@ class Karyawan < ApplicationRecord
   validates :email, presence: true, uniqueness: true, length: { maximum: 100 }
   validates :nomor_telepon, length: { maximum: 15 }, allow_blank: true
   validates :status, inclusion: { in: %w[aktif nonaktif] }
-
+  
   scope :by_nama, ->(nama) { where("nama_lengkap ILIKE ?", "%#{nama}%") }
   scope :by_email, ->(email) { where("email ILIKE ?", "%#{email}%") }
   scope :by_nomor_telepon, ->(nomor) { where("nomor_telepon LIKE ?", "%#{nomor}%") }
@@ -20,4 +20,9 @@ class Karyawan < ApplicationRecord
   scope :by_departemen_id, ->(departemen_id) { where(departemen_id: departemen_id) }
   scope :by_jabatan_id, ->(jabatan_id) { where(jabatan_id: jabatan_id) }
   scope :by_status, ->(status) { where(status: status) }
+  scope :active, -> { where(deleted: false) }
+
+  def soft_delete
+    update(deleted: true)
+  end
 end
