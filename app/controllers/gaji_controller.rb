@@ -54,6 +54,6 @@ class GajiController < ApplicationController
   end
 
   def gaji_params
-    params.require(:gaji).permit(:karyawan_id, :bulan, :gaji_pokok, :tunjangan, :potongan, :total_gaji)
+    params.require(:gaji).permit(:karyawan_id, :bulan, :gaji_pokok, :tunjangan, :potongan)
   end
 end
