@@ -1,11 +1,21 @@
 class DepartemenController < ApplicationController
-  include QueryParamCheckDepartemen
-
   before_action :set_departemen, only: %i[show update destroy]
 
   def index
-    @departemen = filter_departemen(Departemen.all)
-    render json: @departemen
+    @departemen, filtered = Departemen.apply_filters(params)
+
+    # Default sorting by ID ascending
+    @departemen = @departemen.order(id: :asc)
+
+    # If filters were applied and no results found, return error
+    if filtered && @departemen.empty?
+      render json: { 
+        error: "No exact match found for the given criteria",
+        message: "Please ensure your search criteria exactly matches the records in the database"
+      }, status: :not_found
+    else
+      render json: @departemen
+    end
   end
 
   def show
@@ -43,6 +53,6 @@ class DepartemenController < ApplicationController
   end
 
   def departemen_params
-    params.permit(:nama_departemen)
+    params.require(:departemen).permit(:nama_departemen)
   end
 end

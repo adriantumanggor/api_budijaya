@@ -1,11 +1,21 @@
 class AbsensiController < ApplicationController
-  include QueryParamCheckAbsensi
-
   before_action :set_absensi, only: %i[show update destroy]
 
   def index
-    @absensi = filter_absensi(Absensi.all)
-    render json: @absensi
+    @absensi, filtered = Absensi.apply_filters(params)
+
+    # Default sorting by ID ascending
+    @absensi = @absensi.order(id: :asc)
+
+    # If filters were applied and no results found, return error
+    if filtered && @absensi.empty?
+      render json: { 
+        error: "No exact match found for the given criteria",
+        message: "Please ensure your search criteria exactly matches the records in the database"
+      }, status: :not_found
+    else
+      render json: @absensi
+    end
   end
 
   def show
@@ -13,17 +23,18 @@ class AbsensiController < ApplicationController
   end
 
   def create
-    @absensi = Absensi.new(absensi_params)
-
-    if @absensi.save
-      render json: @absensi, status: :created, location: @absensi
-    else
-      render json: @absensi.errors, status: :unprocessable_entity
+    begin
+      @absensi = Absensi.process_attendance(absensi_params[:karyawan_id])
+      render json: @absensi, status: :created
+    rescue StandardError => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { error: e.record.errors.full_messages }, status: :unprocessable_entity
     end
   end
-
+  
   def update
-    if @absensi.update(absensi_update_params)
+    if @absensi.update(absensi_params)
       render json: @absensi
     else
       render json: @absensi.errors, status: :unprocessable_entity
@@ -32,6 +43,7 @@ class AbsensiController < ApplicationController
 
   def destroy
     @absensi.destroy!
+    head :no_content
   end
 
   private
@@ -42,11 +54,7 @@ class AbsensiController < ApplicationController
     render json: { error: "Absensi record not found" }, status: :not_found
   end
 
-  def absensi_update_params
-    params.require(:absensi).permit(:karyawan_id, :tanggal, :waktu_masuk, :waktu_keluar, :status_absensi)
-  end
-
   def absensi_params
-    params.require(:absensi).permit(:karyawan_id, :status_absensi)
+    params.require(:absensi).permit(:karyawan_id, :tanggal, :waktu_masuk, :waktu_keluar, :status_absensi)
   end
 end

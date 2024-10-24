@@ -1,11 +1,21 @@
 class JabatanController < ApplicationController
-  include QueryParamCheckJabatan
-
   before_action :set_jabatan, only: %i[show update destroy]
 
   def index
-    @jabatan = filter_jabatan(Jabatan.all)
-    render json: @jabatan
+    @jabatan, filtered = Jabatan.apply_filters(params)
+
+    # Default sorting by ID ascending
+    @jabatan = @jabatan.order(id: :asc)
+
+    # If filters were applied and no results found, return error
+    if filtered && @jabatan.empty?
+      render json: { 
+        error: "No exact match found for the given criteria",
+        message: "Please ensure your search criteria exactly matches the records in the database"
+      }, status: :not_found
+    else
+      render json: @jabatan
+    end
   end
 
   def show

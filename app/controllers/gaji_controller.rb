@@ -1,11 +1,21 @@
 class GajiController < ApplicationController
-  include QueryParamCheckGaji
-
   before_action :set_gaji, only: %i[show update destroy]
 
   def index
-    @gaji = filter_gaji(Gaji.all)
-    render json: @gaji
+    @gaji, filtered = Gaji.apply_filters(params)
+
+    # Default sorting by ID ascending
+    @gaji = @gaji.order(id: :asc)
+
+    # If filters were applied and no results found, return error
+    if filtered && @gaji.empty?
+      render json: { 
+        error: "No exact match found for the given criteria",
+        message: "Please ensure your search criteria exactly matches the records in the database"
+      }, status: :not_found
+    else
+      render json: @gaji
+    end
   end
 
   def show
