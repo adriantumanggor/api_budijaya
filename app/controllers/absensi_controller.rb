@@ -24,14 +24,22 @@ class AbsensiController < ApplicationController
 
   def create
     begin
-      @absensi = Absensi.process_attendance(absensi_params[:karyawan_id])
+      # Set default status to 'hadir' if not provided
+      params[:absensi][:status_absensi] ||= 'hadir'
+
+      @absensi = if params[:absensi][:status_absensi] == 'hadir'
+        Absensi.process_attendance(absensi_params[:karyawan_id])
+      else
+        Absensi.create_with_status(absensi_params)
+      end
+
       render json: @absensi, status: :created
     rescue StandardError => e
       render json: { error: e.message }, status: :unprocessable_entity
     rescue ActiveRecord::RecordInvalid => e
       render json: { error: e.record.errors.full_messages }, status: :unprocessable_entity
     end
-  end
+  end  
   
   def update
     if @absensi.update(absensi_params)

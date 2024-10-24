@@ -51,7 +51,8 @@ class Absensi < ApplicationRecord
         karyawan_id: karyawan_id,
         tanggal: Date.today,
         waktu_masuk: Time.current,
-        status_absensi: 'hadir'
+        status_absensi: 'hadir',
+        keterangan: 'Regular attendance'
       )
     elsif today_attendance.waktu_keluar.nil?
       # Check-out
@@ -63,11 +64,35 @@ class Absensi < ApplicationRecord
     end
   end
 
+  def self.create_with_status(params)
+    params[:tanggal] ||= Date.today
+    create!(params)
+  end
+
   private
 
   def valid_waktu_keluar
     if waktu_keluar.present? && waktu_masuk.present? && waktu_keluar < waktu_masuk
       errors.add(:waktu_keluar, "can't be earlier than check-in time")
+    end
+  end
+
+  def no_duplicate_attendance_for_date
+    if Absensi.where(karyawan_id: karyawan_id, tanggal: tanggal).exists?
+      errors.add(:base, "Attendance record already exists for this date")
+    end
+  end
+
+  def valid_status_time_combination
+    case status_absensi
+    when 'hadir'
+      if waktu_masuk.nil?
+        errors.add(:waktu_masuk, "must be present for status 'hadir'")
+      end
+    when 'sakit', 'izin', 'alpha'
+      if waktu_masuk.present? || waktu_keluar.present?
+        errors.add(:base, "Time entries should be empty for status '#{status_absensi}'")
+      end
     end
   end
 end
