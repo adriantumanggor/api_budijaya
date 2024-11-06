@@ -114,3 +114,5 @@ SELECT cron.schedule('absent_check', '59 23 * * *', $$SELECT insert_alpha_record
 
 -- Step 5: Verify the scheduled job
 SELECT * FROM cron.job;
+
+

@@ -4,10 +4,8 @@ class AbsensiController < ApplicationController
   def index
     @absensi, filtered = Absensi.apply_filters(params)
 
-    # Default sorting by ID ascending
     @absensi = @absensi.order(id: :asc)
 
-    # If filters were applied and no results found, return error
     if filtered && @absensi.empty?
       render json: { 
         error: "No exact match found for the given criteria",
@@ -24,7 +22,6 @@ class AbsensiController < ApplicationController
 
   def create
     begin
-      # Set default status to 'hadir' if not provided
       params[:absensi][:status_absensi] ||= 'hadir'
 
       @absensi = if params[:absensi][:status_absensi] == 'hadir'
