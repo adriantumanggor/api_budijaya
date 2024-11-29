@@ -1,5 +1,3 @@
-
-# app/controllers/karyawan_controller.rb
 class KaryawanController < ApplicationController
   before_action :set_karyawan, only: %i[show update destroy]
 
@@ -17,13 +15,14 @@ class KaryawanController < ApplicationController
         message: "Please ensure your search criteria exactly matches the records in the database"
       }, status: :not_found
     else
-      render json: @karyawan
+      # Map to the desired JSON structure
+      render json: @karyawan.map { |karyawan| format_karyawan(karyawan) }
     end
   end
 
   # GET /karyawan/:id
   def show
-    render json: @karyawan
+    render json: format_karyawan(@karyawan)
   end
 
   # POST /karyawan
@@ -31,7 +30,7 @@ class KaryawanController < ApplicationController
     @karyawan = Karyawan.new(karyawan_params)
 
     if @karyawan.save
-      render json: @karyawan, status: :created, location: @karyawan
+      render json: format_karyawan(@karyawan), status: :created, location: @karyawan
     else
       render json: @karyawan.errors, status: :unprocessable_entity
     end
@@ -40,7 +39,7 @@ class KaryawanController < ApplicationController
   # PATCH/PUT /karyawan/:id
   def update
     if @karyawan.update(karyawan_params)
-      render json: @karyawan
+      render json: format_karyawan(@karyawan)
     else
       render json: @karyawan.errors, status: :unprocessable_entity
     end
@@ -67,5 +66,18 @@ class KaryawanController < ApplicationController
       :alamat, :tanggal_masuk, :departemen_id, :jabatan_id, 
       :status, :deleted
     )
+  end
+
+  # Custom method to format karyawan data to match the frontend interface
+  def format_karyawan(karyawan)
+    {
+      id: karyawan.id.to_s,
+      name: karyawan.nama_lengkap,
+      position: karyawan.jabatan&.nama_jabatan || karyawan.jabatan_id.to_s,
+      department: karyawan.departemen&.nama_departemen || karyawan.departemen_id.to_s,
+      email: karyawan.email,
+      phone: karyawan.nomor_telepon,
+      status: karyawan.status
+    }
   end
 end

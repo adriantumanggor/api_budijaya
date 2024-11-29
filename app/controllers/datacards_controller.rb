@@ -35,18 +35,14 @@ class DatacardsController < ApplicationController
   
       # Compile response data
       data = [
-        { title: "Total Karyawan", value: total_karyawan, description: "Total karyawan" },
-        { title: "Hadir Hari Ini", value: hadir_hari_ini, description: "kehadiran hari ini" },
-        { title: "Cuti", value: cuti_minggu_ini, description: "Jumlah karyawan yang mengambil cuti minggu ini" },
-        { title: "Jam Kerja Minggu Ini", value: "#{rata_rata_jam_kerja.round(2)} jam", description: "Rata-rata jam kerja karyawan minggu ini" }
+        { value: total_karyawan, description: "Total karyawan" },
+        { value: hadir_hari_ini, description: "kehadiran hari ini" },
+        { value: cuti_minggu_ini, description: "Jumlah karyawan yang mengambil cuti minggu ini" },
+        { value: "#{rata_rata_jam_kerja.round(2)} jam", description: "Rata-rata jam kerja karyawan minggu ini" }
       ]
   
       render json: data
     end
-  end
+end
   
-  # config/routes.rb
-  Rails.application.routes.draw do
-    get '/datacards', to: 'datacards#index'
-  end
   
