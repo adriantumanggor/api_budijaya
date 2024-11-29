@@ -1,7 +1,8 @@
 class Departemen < ApplicationRecord
   self.table_name = "departemen"
 
-  has_many :karyawan
+  has_many :karyawan, class_name: "Karyawan"
+  belongs_to :manager, class_name: "Karyawan", optional: true
 
   validates :nama_departemen, presence: true, length: { maximum: 100 }
 

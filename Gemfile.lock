@@ -76,6 +76,7 @@ GEM
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
     base64 (0.2.0)
+    bcrypt (3.1.20)
     bigdecimal (3.1.8)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
@@ -103,6 +104,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.7.2)
+    jwt (2.9.3)
+      base64
     language_server-protocol (3.17.0.3)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -268,9 +271,11 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
+  bcrypt (~> 3.1.7)
   bootsnap
   brakeman
   debug
+  jwt
   pg (~> 1.1)
   puma (>= 5.0)
   rack-cors
