@@ -2,20 +2,9 @@ class DepartemenController < ApplicationController
   before_action :set_departemen, only: %i[show update destroy]
 
   def index
-    @departemen, filtered = Departemen.apply_filters(params)
+    @departemen_with_manager = Departemen.with_manager_name
 
-    # Default sorting by ID ascending
-    @departemen = @departemen.order(id: :asc)
-
-    # If filters were applied and no results found, return error
-    if filtered && @departemen.empty?
-      render json: { 
-        error: "No exact match found for the given criteria",
-        message: "Please ensure your search criteria exactly matches the records in the database"
-      }, status: :not_found
-    else
-      render json: @departemen
-    end
+    render json: @departemen_with_manager.map { |departemen_with_manager| format_karyawan(departemen_with_manager) }
   end
 
   def show
@@ -53,6 +42,15 @@ class DepartemenController < ApplicationController
   end
 
   def departemen_params
-    params.require(:departemen).permit(:nama_departemen)
+    params.permit(:manager_id)
+  end
+
+  def format_karyawan(departemen)
+    {
+      id: departemen.id.to_s,
+      name: departemen.name,
+      manager_name: departemen.manager_name,
+      manager_id: departemen.manager_id
+    }
   end
 end

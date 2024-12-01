@@ -1,8 +1,17 @@
 Rails.application.routes.draw do
+  resources :karyawan do
+    collection do
+      get :managers
+    end
+  end
+  
+  resources :departemen
+  resources :gaji
+  resources :departemen
+  resources :absensi
 
   get "/datacards", to: "datacards#index"
 
-  get "/karyawan", to: "karyawan#index"
 
   post "/login", to: "auth#login"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -14,4 +23,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
   get "/hellnah", to: "hello#index"
+
+  match '*path', to: 'application#options', via: :options
 end

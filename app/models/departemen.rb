@@ -4,20 +4,12 @@ class Departemen < ApplicationRecord
   has_many :karyawan, class_name: "Karyawan"
   belongs_to :manager, class_name: "Karyawan", optional: true
 
-  validates :nama_departemen, presence: true, length: { maximum: 100 }
+  validates :name, length: { maximum: 100 }
 
-  scope :by_nama, ->(nama) { where(nama_departemen: nama) }
 
-  def self.apply_filters(params)
-    departemen = Departemen.all
-    filtered = false
-
-    if params[:nama_departemen].present?
-      departemen = departemen.by_nama(params[:nama_departemen])
-      filtered = true
-    end
-
-    return departemen, filtered
+  def self.with_manager_name
+    left_joins(:manager)
+      .select('departemen.id', 'departemen.name', 'karyawan.name AS manager_name', 'departemen.manager_id')
   end
 
 end
