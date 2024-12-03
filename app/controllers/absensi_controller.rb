@@ -20,7 +20,6 @@ class AbsensiController < ApplicationController
     render json: absensi, serializer: AbsensiSerializer, status: :created
   end
 
-
   # PATCH/PUT /absensi/:id
   def update
     if @absensi.update(absensi_params)

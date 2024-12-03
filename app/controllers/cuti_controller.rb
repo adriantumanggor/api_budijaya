@@ -1,18 +1,16 @@
+# app/controllers/cuti_controller.rb
 class CutiController < ApplicationController
-  before_action :set_cuti, only: %i[show edit update destroy]
+  before_action :set_cuti, only: [:show, :update, :destroy]
 
   # GET /cuti
   def index
     @cuti = Cuti.all
+    render json: @cuti
   end
 
   # GET /cuti/:id
   def show
-  end
-
-  # GET /cuti/new
-  def new
-    @cuti = Cuti.new
+    render json: @cuti
   end
 
   # POST /cuti
@@ -20,43 +18,38 @@ class CutiController < ApplicationController
     @cuti = Cuti.new(cuti_params)
 
     if @cuti.save
-      redirect_to @cuti, notice: 'Cuti was successfully created.'
+      render json: @cuti, status: :created
     else
-      render :new, status: :unprocessable_entity
+      render json: @cuti.errors, status: :unprocessable_entity
     end
   end
 
-  # GET /cuti/:id/edit
-  def edit
-  end
-
-  # PATCH/PUT /cuti/:id
+  # PUT /cuti/:id
   def update
     if @cuti.update(cuti_params)
-      redirect_to @cuti, notice: 'Cuti was successfully updated.'
+      render json: @cuti
     else
-      render :edit, status: :unprocessable_entity
+      render json: @cuti.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /cuti/:id
   def destroy
     @cuti.destroy
-    redirect_to cuti_index_path, notice: 'Cuti was successfully deleted.'
+    head :no_content
   end
 
   private
 
-  # Find the cuti record by ID
+  # Find a specific `cuti` by ID
   def set_cuti
     @cuti = Cuti.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    redirect_to cuti_index_path, alert: 'Cuti not found.'
+    render json: { error: "Cuti not found" }, status: :not_found
   end
 
-  # Strong parameters
+  # Strong parameters for `cuti`
   def cuti_params
     params.require(:cuti).permit(:karyawan_id, :tanggal_mulai, :tanggal_selesai, :jenis_cuti, :status)
   end
 end
-  
