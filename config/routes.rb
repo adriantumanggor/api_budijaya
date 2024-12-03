@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :gaji
   resources :departemen
   resources :absensi
+  resources :cuti
 
   get "/datacards", to: "datacards#index"
 
