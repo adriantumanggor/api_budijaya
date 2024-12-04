@@ -4,11 +4,11 @@ class DatacardsController < ApplicationController
     # Dynamic data
     total_karyawan = Karyawan.where(deleted: false).count
     hadir_hari_ini = Absensi.where(
-      status_absensi: "hadir",
+      status: "hadir",
       tanggal: Date.today
     ).count
     cuti_minggu_ini = Absensi.where(
-      status_absensi: "cuti",
+      status: "cuti",
       tanggal: Date.today.beginning_of_week..Date.today.end_of_week
     ).count
 

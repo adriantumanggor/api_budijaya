@@ -17,7 +17,7 @@ class AbsensiController < ApplicationController
     # Menangani absensi dengan process_attendance
     absensi = Absensi.process_attendance(absensi_params[:karyawan_id])
 
-    render json: absensi, serializer: AbsensiSerializer, status: :created
+    render json: absensi, serializer: AbsensiSerializer
   end
 
   # PATCH/PUT /absensi/:id
@@ -46,6 +46,6 @@ class AbsensiController < ApplicationController
 
   # Strong parameters
   def absensi_params
-    params.permit(:karyawan_id, :tanggal, :waktu_masuk, :waktu_keluar, :status_absensi)
+    params.permit(:karyawan_id, :tanggal, :waktu_masuk, :waktu_keluar, :status)
   end
 end

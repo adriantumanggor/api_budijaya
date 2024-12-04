@@ -4,7 +4,7 @@ class CutiController < ApplicationController
 
   # GET /cuti
   def index
-    @cuti = Cuti.all
+    @cuti = Cuti.all.includes(:karyawan)
     render json: @cuti
   end
 
@@ -41,14 +41,12 @@ class CutiController < ApplicationController
 
   private
 
-  # Find a specific `cuti` by ID
   def set_cuti
     @cuti = Cuti.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "Cuti not found" }, status: :not_found
+    render json: { error: "Cuti record not found" }, status: :not_found
   end
 
-  # Strong parameters for `cuti`
   def cuti_params
     params.require(:cuti).permit(:karyawan_id, :tanggal_mulai, :tanggal_selesai, :jenis_cuti, :status)
   end
