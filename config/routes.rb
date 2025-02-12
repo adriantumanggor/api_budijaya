@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   get "/datacards", to: "datacards#index"
 
+  get 'cuti/user/:karyawan_id', to: 'cuti#user_cuti'
 
   post "/login", to: "auth#login"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

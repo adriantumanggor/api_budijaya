@@ -8,6 +8,17 @@ class CutiController < ApplicationController
     render json: @cuti
   end
 
+  # GET /cuti/user/:karyawan_id
+  def user_cuti
+    @cuti = Cuti.where(karyawan_id: params[:karyawan_id])
+
+    if @cuti.exists?
+      render json: @cuti
+    else
+      render json: { error: "No leave records found for this user" }, status: :not_found
+    end
+  end
+
   # GET /cuti/:id
   def show
     render json: @cuti
